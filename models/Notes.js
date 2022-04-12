@@ -1,6 +1,10 @@
 const mongoose=require("mongoose");
 
 let NotesSchema=new mongoose.Schema({
+    user_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"ReactUser"
+    },
     title:{
         type:String,
         required:true
