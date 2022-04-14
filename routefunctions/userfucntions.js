@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const JWT = require("jsonwebtoken");
 
@@ -9,7 +9,7 @@ let createuser = async (req, res) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ error: errors.array()[0].msg,success:fasle,code:400 });
+    return res.status(400).json({ error: errors.array()[0].msg, success: false, code: 400 });
   }
   try {
 
@@ -25,18 +25,18 @@ let createuser = async (req, res) => {
     }
     let token = JWT.sign(data, JWT_SECERET);
     return res.status(200).json({
-      token:token,
-      success:true,code:200, user: user
+      token: token,
+      success: true, code: 200, user: user
     })
   } catch (error) {
-    return res.status(400).json({error:"internal server error",success:false,code:400})
+    return res.status(400).json({ error: "email already exist try to login", success: false, code: 400 })
   }
 }
 
 let login = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ error: errors.array()[0].msg,success:false,code:400 });
+    return res.status(400).json({ error: errors.array()[0].msg, success: false, code: 400 });
   }
 
   try {
@@ -44,13 +44,13 @@ let login = async (req, res) => {
 
     let userdata = await User.findOne({ "email": email });
     if (!userdata) {
-      return res.status(400).json({ error: "please enter correct user cradentials",success:false,code:400 });
+      return res.status(400).json({ error: "please enter correct user cradentials", success: false, code: 400 });
     }
 
     let passwordcomapare = await bcrypt.compare(password, userdata.password);
 
     if (!passwordcomapare) {
-      return res.status(400).json({ error: "please enter correct user cradentials",success:false,code:400 })
+      return res.status(400).json({ error: "please enter correct user cradentials", success: false, code: 400 })
     }
 
     let data = {
@@ -59,11 +59,11 @@ let login = async (req, res) => {
     let token = JWT.sign(data, JWT_SECERET);
     return res.status(200).json({
       token,
-      success:true,
-      code:200
+      success: true,
+      code: 200
     })
   } catch (err) {
-    return res.status(400).json({ error: "internal server error",success:false,code:400})
+    return res.status(400).json({ error: "internal server error", success: false, code: 400 })
   }
 
 }
@@ -74,11 +74,11 @@ let getuser = async (req, res) => {
 
     let user = await User.find({ "_id": id });
     if (!user) {
-      return res.status(400).json({ error: "bad request",success:false,code:400 })
+      return res.status(400).json({ error: "bad request", success: false, code: 400 })
     }
     return res.json(user)
   } catch (error) {
-    return res.status(400).json({error:"internal error occured",success:false,code:400});
+    return res.status(400).json({ error: "internal error occured", success: false, code: 400 });
   }
 }
 

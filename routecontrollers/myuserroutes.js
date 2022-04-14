@@ -8,9 +8,9 @@ const router=express.Router()
 
 //user function
 router.route("/createuser").post([
-    body('username',"Enter valid username").isLength({ min: 4 }),
+    body('username',"username should be at least 3 characters").isLength({ min: 3 }),
     body('email',"Enter valid email").isEmail(),
-    body('password',"Enter valid password").isLength({ min: 8 }),
+    body('password',"password should be at least 4 characters").isLength({ min: 4 }),
     body('password',"password can not be blank").exists()
 ],createuser)
 
