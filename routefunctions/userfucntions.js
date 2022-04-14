@@ -9,7 +9,7 @@ let createuser = async (req, res) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ error: errors.array()[0].msg,success:fasle,code:400 });
   }
   try {
 
@@ -20,28 +20,23 @@ let createuser = async (req, res) => {
       password: securepass,
       email: req.body.email
     })
-    // .then(user => res.json(user))
-    // .catch(err=>{
-    //     console.log(err)
-    //     res.json({message:"pelase enter uniq value",err:err.message})
-    //   });
     let data = {
       id: user.id
     }
     let token = JWT.sign(data, JWT_SECERET);
-    res.send({
-      token,
-      fun: "createuser", user: user
+    return res.status(200).json({
+      token:token,
+      success:true,code:200, user: user
     })
   } catch (error) {
-    console.log("internal server error")
+    return res.status(400).json({error:"internal server error",success:false,code:400})
   }
 }
 
 let login = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ error: errors.array()[0].msg,success:false,code:400 });
   }
 
   try {
@@ -49,25 +44,26 @@ let login = async (req, res) => {
 
     let userdata = await User.findOne({ "email": email });
     if (!userdata) {
-      res.status(400).json({ error: "please enter correct user cradentials" });
+      return res.status(400).json({ error: "please enter correct user cradentials",success:false,code:400 });
     }
 
     let passwordcomapare = await bcrypt.compare(password, userdata.password);
 
     if (!passwordcomapare) {
-      res.status(400).json({ error: "please enter correct user cradentials" })
+      return res.status(400).json({ error: "please enter correct user cradentials",success:false,code:400 })
     }
 
     let data = {
       id: userdata.id
     }
     let token = JWT.sign(data, JWT_SECERET);
-    res.send({
+    return res.status(200).json({
       token,
-      fun: "login"
+      success:true,
+      code:200
     })
   } catch (err) {
-    console.log(err.message)
+    return res.status(400).json({ error: "internal server error",success:false,code:400})
   }
 
 }
@@ -78,11 +74,11 @@ let getuser = async (req, res) => {
 
     let user = await User.find({ "_id": id });
     if (!user) {
-      res.status(400).json({ error: "bad request" })
+      return res.status(400).json({ error: "bad request",success:false,code:400 })
     }
-    res.json(user)
+    return res.json(user)
   } catch (error) {
-    res.status(400).send("internal error occured");
+    return res.status(400).json({error:"internal error occured",success:false,code:400});
   }
 }
 
