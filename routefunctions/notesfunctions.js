@@ -4,6 +4,8 @@ const {  validationResult } = require('express-validator');
 let getnote= async (req,res)=>{
     try{
     let note=await Notes.find({"user_id":req.user.id})
+    // console.log(note);
+    console.log("there is some problem");
     return res.status(200).json({note:note,success:true,code:200});
     }catch(error){
         res.status(401).json({error:"some error occured",success:false,code:401});

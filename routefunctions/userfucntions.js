@@ -41,16 +41,16 @@ let login = async (req, res) => {
 
   try {
     let { email, password } = req.body
-
+    // console.log("hey");
     let userdata = await User.findOne({ "email": email });
     if (!userdata) {
-      return res.status(400).json({ error: "please enter correct user cradentials", success: false, code: 400 });
+      return res.status(400).json({ error: "account does not exist create new account", success: false, code: 400 });
     }
 
     let passwordcomapare = await bcrypt.compare(password, userdata.password);
 
     if (!passwordcomapare) {
-      return res.status(400).json({ error: "please enter correct user cradentials", success: false, code: 400 })
+      return res.status(400).json({ error: "incorrect password", success: false, code: 400 })
     }
 
     let data = {
